@@ -11,34 +11,27 @@ import (
 	"testing"
 )
 
-func TestSettlement3(t *testing.T) {
-	expectedStateHash := "0xb173c4502945ae6243acc1837bc8be5a8187956d43278ac4561c42c0cd8f34d2"
+func TestWithdraw(t *testing.T) {
+	expectedStateHash := "0x6721b6f5631f5bab0d264e5b6db6cdda0066a5a8257e6a0c0210978e283a43f3"
 
 	bc := blockchain.NewBlockchain(&blockchain.Genesis{
 		AccountAlloc: map[uint32]blockchain.GenesisAccount{
 			0: {
-				Tokens: map[uint16]*big.Int{
-					0: big.NewInt(30000),
-					1: big.NewInt(2000000),
-				},
-				Pubkey:  hexutil.MustDecode("0x0cfb7e0cf1380065477345a42aa821aa1c68e7d9eb213eee1e8f00cb707458a4"),
+				Tokens:  map[uint16]*big.Int{},
+				Pubkey:  hexutil.MustDecode("0x06ee0abfc4fb2ce0dc84a7726b79cc354484205b509a0c0745d394503f513726"),
 				Address: common.HexToAddress("0xdc70a72abf352a0e3f75d737430eb896ba9bf9ea"),
 			},
-			17: {
+
+			23: {
 				Tokens: map[uint16]*big.Int{
-					0: big.NewInt(70000),
-					1: big.NewInt(6000000),
+					0: big.NewInt(2000),
 				},
-				Pubkey:  hexutil.MustDecode("0x0c9bc9ed7b58277d5f9036c85e47958c65bc81104718a9364a294d96b4d277da"),
+				Pubkey:  hexutil.MustDecode("0x0359781e83863e6945f7704baeb504c36609b87fab674eec37439c87aea435a1"),
 				Address: common.HexToAddress("0xdc70a72abf352a0e3f75d737430eb896ba9bf9ea"),
 			},
-			30: {
-				Tokens: map[uint16]*big.Int{
-					0: big.NewInt(30000),
-					1: big.NewInt(1000000),
-					2: big.NewInt(5000000),
-				},
-				Pubkey:  hexutil.MustDecode("0x01820b7899ad2a62a1c4aacf320b1a528c8c98aa558ee777e60110be62626e42"),
+			47: {
+				Tokens:  map[uint16]*big.Int{},
+				Pubkey:  hexutil.MustDecode("0x064d9b32b5812260f75c844aa11e79fe0bf986b202d31496360f3d5304ba6de0"),
 				Address: common.HexToAddress("0x052f46feb45822e7f117536386c51b6bd3125157"),
 			},
 		},
@@ -68,16 +61,32 @@ func TestSettlement3(t *testing.T) {
 		},
 	})
 
-	blk := &types.MiniBlock{
+	blk1 := &types.MiniBlock{
 		Txs: []types.Transaction{
-			&types.Settlement3{
-				LooID1: 243,
-				LooID2: 56,
+			&types.DepositOp{
+				AccountID: 23,
+				TokenID:   2,
+				Amount:    big.NewInt(45242000),
 			},
 		},
 	}
 
-	_ = bc.AddMiniBlock(blk)
+	_ = bc.AddMiniBlock(blk1)
+
+	blk2 := &types.MiniBlock{
+		Txs: []types.Transaction{
+			&types.WithdrawOp{
+				TokenID:    2,
+				Amount:     types.PackedAmount{Mantisa: 4, Exp: 7},
+				DestAddr:   common.HexToAddress("0x99af5af1f1a61fe1678e030916f79331a28a57e8"),
+				AccountID:  23,
+				ValidSince: 0,
+				Fee:        types.PackedFee{Mantisa: 1, Exp: 2},
+			},
+		},
+	}
+
+	_ = bc.AddMiniBlock(blk2)
 
 	actualStateHash := bc.GetStateData().Hash().String()
 	fmt.Println(actualStateHash)
