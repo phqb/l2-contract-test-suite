@@ -12,7 +12,7 @@ import (
 func TestStateRoot(t *testing.T) {
 
 	var (
-		pubKey1, _   = hexutil.Decode("0xb8748a745b1c75a34238d56576e41bea9207fb5e1f7da8abe741bd9dbf14dd0e0cfb7e0cf1380065477345a42aa821aa1c68e7d9eb213eee1e8f00cb707458a4")
+		pubKey1, _   = hexutil.Decode("0x0cfb7e0cf1380065477345a42aa821aa1c68e7d9eb213eee1e8f00cb707458a4")
 		accountAlloc = map[uint32]GenesisAccount{
 			0: {
 				Tokens: map[uint16]*big.Int{

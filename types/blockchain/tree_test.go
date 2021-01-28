@@ -1,6 +1,10 @@
 package blockchain
 
 import (
+	"fmt"
+	"github.com/ethereum/go-ethereum/crypto"
+	"math"
+	"strconv"
 	"testing"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -65,4 +69,26 @@ func TestMerkleTree_GetProofBatch(t *testing.T) {
 
 	recoverRootHash := getRootHashFromBatchProof(keys, values, siblings, 4)
 	require.Equal(t, recoverRootHash.Hex(), tr.RootHash().Hex())
+}
+
+func TestMerkleTree_RootHash(t *testing.T) {
+	fmt.Println("[")
+
+	for i := 0; i < 1024; i ++ {
+		height := uint(math.Ceil(math.Log2(float64(i + 1))))
+
+		tr := NewTree(height + 1)
+
+		for e := 0; e <= i; e ++ {
+			h := crypto.Keccak256Hash([]byte(strconv.Itoa(e + 1)))
+			tr.Update(uint64(e), common.BytesToHash(h[:]))
+		}
+
+		rootHash := tr.RootHash()
+		fmt.Print("    \"")
+		fmt.Print(rootHash.String()[2:])
+		fmt.Println("\",")
+	}
+
+	fmt.Println("];")
 }

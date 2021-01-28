@@ -11,6 +11,11 @@ import (
 	"github.com/KyberNetwork/l2-contract-test-suite/types"
 )
 
+func TestFoo(t *testing.T) {
+	bc := NewBlockchain(&Genesis{})
+	fmt.Println(bc.GetStateData().Hash().Hex())
+}
+
 func TestNewBlockchain(t *testing.T) {
 	var (
 		pubKey1, _ = hexutil.Decode("0xb8748a745b1c75a34238d56576e41bea9207fb5e1f7da8abe741bd9dbf14dd0e0cfb7e0cf1380065477345a42aa821aa1c68e7d9eb213eee1e8f00cb707458a4")
